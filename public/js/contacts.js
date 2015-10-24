@@ -1,22 +1,19 @@
 'use strict';
 
-var app = angular.module('myContacts.contacts', ['ngRoute','firebase']);
+var app = angular.module('myContacts', ['ngRoute','firebase']);
 
 app.config(['$routeProvider', function($routeProvider) {
-  $routeProvider.when('/contacts', {
+  $routeProvider.when('/', {
     templateUrl: 'contacts.html',
     controller: 'ContactsCtrl'
   });
 }]);
-
 // Contacts Controller
 app.controller('ContactsCtrl', ['$scope', '$firebaseArray', function($scope, $firebaseArray) {
   // Init Firebase
   var ref = new Firebase('https://my-contact-application.firebaseio.com/contacts');
   // get Contacts
   $scope.contacts = $firebaseArray(ref);
-  // console.log($scope.contacts);
-
   // Show Add Form
   $scope.showAddForm = function() {
     clearFields();
@@ -25,20 +22,17 @@ app.controller('ContactsCtrl', ['$scope', '$firebaseArray', function($scope, $fi
     $scope.contactShow = false;
     $scope.msg = false;
   }
-
   // Hide Edit Form
   $scope.hideEditForm = function() {
     $scope.editFormShow = false;
     $scope.msg = false;
   }
-
   // Show Edit Form
   $scope.showEditForm = function(contact) {
     $scope.editFormShow = true;
     $scope.contactShow = false;
     $scope.addFormShow = false;
     $scope.msg = false;
-
     $scope.id              = contact.$id;
     $scope.name            = contact.name;
     $scope.email           = contact.email;
@@ -51,14 +45,12 @@ app.controller('ContactsCtrl', ['$scope', '$firebaseArray', function($scope, $fi
     $scope.state           = contact.address[0].state;
     $scope.zip_code        = contact.address[0].zip_code;
   }
-
   // Hide Add Form
   $scope.hideAddForm = function() {
     $scope.addFormShow = false;
     $scope.contactShow = false;
     $scope.msg = false;
   }
-
   // Submit Contact
   $scope.addFormSubmit = function(){
     console.log('Adding Contact...');
@@ -73,7 +65,6 @@ app.controller('ContactsCtrl', ['$scope', '$firebaseArray', function($scope, $fi
     if($scope.city){ var city = $scope.city; } else { var city = ''; } 
     if($scope.state){ var state = $scope.state; } else { var state = ''; } 
     if($scope.zip_code){ var zip_code = $scope.zip_code; } else { var zip_code = ''; } 
-  
     // Bulid Object
     $scope.contacts.$add({
       name: name,
@@ -93,27 +84,21 @@ app.controller('ContactsCtrl', ['$scope', '$firebaseArray', function($scope, $fi
     }).then(function(ref){
       var id = ref.key();
       console.log('Add Contact with ID: '+id);
-
       // Clear Form
       clearFields();
-
       // Hide Form
       $scope.addFormShow = false;
-
       // Send Message
       $scope.msg = "Contact Added";
     });
   }
-
+  // Edit Form Function
   $scope.editFormSubmit = function(){
     console.log('Updating Contact...');
-
     // Get ID
     var id = $scope.id;
-
     // Get Record
     var record = $scope.contacts.$getRecord(id);
-
     // Assign Values
     record.name                       = $scope.name;
     record.email                      = $scope.email;
@@ -125,21 +110,15 @@ app.controller('ContactsCtrl', ['$scope', '$firebaseArray', function($scope, $fi
     record.address[0].city            = $scope.city;
     record.address[0].state           = $scope.state;
     record.address[0].zip_code        = $scope.zip_code;
-
     // Save Contact
     $scope.contacts.$save(record).then(function(ref){
       console.log(ref.key);
     });
-
     clearFields();
-
     // Hide Form
     $scope.editFormShow = false;
-
     $scope.msg = "Contact Update";
-
   }
-
   // Show Contact
   $scope.showContact = function(contact){
     console.log('Getting Contact...');
@@ -153,30 +132,23 @@ app.controller('ContactsCtrl', ['$scope', '$firebaseArray', function($scope, $fi
     $scope.city            = contact.address[0].city;
     $scope.state           = contact.address[0].state;
     $scope.zip_code        = contact.address[0].zip_code;
-
     $scope.contactShow = true;
     $scope.addFormShow = false;
     $scope.editFormShow = false;
     $scope.msg = false;
   }
-
-
+  // Remove Contact Function
   $scope.removeContact = function(contact){
-    console.log('Removing Contact...');
-
-    $scope.contacts.$remove(contact);
-
-    $scope.msg = "Contact Ermoved";
-
-    $scop.showAddForm = false;
-    $scop.showEditForm = false;
+    $scope.addFormShow = false;
+    $scope.editFormShow = false;
     $scope.contactShow = false;
+    $scope.contacts.$remove(contact);
+    console.log('Removing Contact...');
+    $scope.msg = "Contact Ermoved";
   }
-
   // Clear $scope Filds
   function clearFields(){
     console.log('Clearing All Fields...');
-
     $scope.name = '';
     $scope.email = '';
     $scope.company = '';
