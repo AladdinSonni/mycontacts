@@ -19,6 +19,7 @@ app.controller('ContactsCtrl', ['$scope', '$firebaseArray', function($scope, $fi
 
   // Show Add Form
   $scope.showAddForm = function() {
+    clearFields();
     $scope.addFormShow = true;
     $scope.editFormShow = false;
     $scope.contactShow = false;
@@ -154,6 +155,7 @@ app.controller('ContactsCtrl', ['$scope', '$firebaseArray', function($scope, $fi
     $scope.zip_code        = contact.address[0].zip_code;
 
     $scope.contactShow = true;
+    $scope.addFormShow = false;
     $scope.editFormShow = false;
     $scope.msg = false;
   }
